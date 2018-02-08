@@ -1,8 +1,13 @@
 
-const fs = require('fs');
+const FS = require('fs');
+const Path = require('path');
+
 const parse = require('../index');
 
-let html = fs.readFileSync('./source/real-article1.html', { encoding: 'utf-8' });
-let clean = parse(html);
+let file = './source/real-article1.html';
+let path = Path.join(__dirname, file);
+
+let raw = FS.readFileSync(path, { encoding: 'utf-8' });
+let clean = parse(raw);
 
 console.log(clean);
