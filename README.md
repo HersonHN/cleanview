@@ -1,6 +1,6 @@
 
 cleanview
-=========
+---------
 
 Clean the content of html articles, same job as services like Instapaper/Readability.
 

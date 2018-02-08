@@ -1,17 +1,36 @@
 {
   "name": "cleanview",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Clean the content of html articles",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "himalaya": "^1.0.0"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HersonHN/cleanview.git"
+  },
+  "keywords": [
+    "clean",
+    "html",
+    "articles",
+    "readability",
+    "instapaper"
+  ],
   "author": {
     "name": "Herson Salinas",
     "email": "hersonhn@gmail.com"
   },
   "license": "ISC",
-  "dependencies": {
-    "himalaya": "^1.0.0"
-  }
+  "bugs": {
+    "url": "https://github.com/HersonHN/cleanview/issues"
+  },
+  "homepage": "https://github.com/HersonHN/cleanview#readme"
 }
