@@ -1,0 +1,17 @@
+{
+  "name": "cleanview",
+  "version": "1.0.0",
+  "description": "Clean the content of html articles",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Herson Salinas",
+    "email": "hersonhn@gmail.com"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "himalaya": "^1.0.0"
+  }
+}
