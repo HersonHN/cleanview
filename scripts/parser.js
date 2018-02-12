@@ -3,14 +3,18 @@
 const himalaya = require('himalaya');
 
 const filters = require('./filters');
+const modifiers = require('./modifiers');
 const $ = require('./query');
 
 
 function parse(html) {
   let json = himalaya.parse(html);
-  let clearedJSON = filters.clear(json);
-  let paragraphs = $('p', clearedJSON);
-  let text = stringify(paragraphs);
+  let clearedJSON = filters.clear(json)[0];
+
+  modifiers.addModifiers(clearedJSON);
+
+  let allParagraphs = $('p', clearedJSON);
+  let text = stringify(allParagraphs);
 
   return cleanText(text);
 }

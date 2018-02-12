@@ -1,17 +1,29 @@
 'use strict';
 
-function $(tag, json, returned) {
-  returned = returned || [];
+function $(tag, element) {
+  let founds = [];
+  search(tag, element, founds);
 
-  json.forEach(function (el) {
-    if (el.tagName === tag) {
-      returned.push(el);
-    } else {
-      if (el.children) $(tag, el.children, returned);
-    }
-  })
-
-  return returned;
+  return founds;
 }
+
+
+function search(tag, element, founds) {
+  // If the tagname match, add the element and return
+  if (element.tagName === tag) {
+    founds.push(element);
+    return;
+  }
+
+  // If the element doesn't have children there's no need to continue
+  if (!element.children) return;
+
+  // If the element has children search recursively
+  element.children.forEach(function (el) {
+    search(tag, el, founds);
+  });
+
+}
+
 
 module.exports = $;
