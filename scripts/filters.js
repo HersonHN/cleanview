@@ -72,7 +72,7 @@ function cleanChildren(e) {
   if (e.children && e.children.length > 0) {
     e.children = clear(e.children);
   }
-  
+
   return e;
 }
 

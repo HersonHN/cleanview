@@ -6,4 +6,4 @@ Clean the content of html articles, same job as services like Instapaper/Readabi
 
 It doesn't use DOM or Virtual DOM in the process.
 
-    /!\ Work In Progress /!\
+⚠️ **Work In Progress** ⚠️
