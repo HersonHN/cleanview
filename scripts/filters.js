@@ -1,7 +1,5 @@
 'use strict';
 
-const FORBIDDEN_CLASSES = ['menu', 'navigation', 'side', 'submeta', 'hidden', 'hide', 'newsletter', 'button', 'form'];
-
 /*
   It's better to just work with the valid tags instead of removing
   all the invalid ones, which can be difficult for obscure tagnames
@@ -15,8 +13,21 @@ const VALID_TAGS = [
   'b', 'i', 'u', 's',
   'img', 'figure', 'figcaption',
   'pre', 'code',
-  'iframe' // this will work only for youtube videos
+  'iframe' // this will render only for videos
 ];
+
+
+// TODO: forbidden classes might be passed as a parameter in the main function's config
+const FORBIDDEN_CLASSES = ['menu', 'navigation', 'side', 'submeta', 'hidden', 'hide', 'newsletter', 'button', 'form'];
+
+
+const ATTRIBUTES_TO_KEEP = {
+  IMAGE: ['src', 'title', 'alt'],
+  LINK: ['href', 'title'],
+  YOUTUBE: ['src', 'width', 'height', 'allowfullscreen', 'frameborder'],
+  OTHER: [],
+  INVALID: []
+}
 
 
 function clear(json) {
@@ -46,7 +57,7 @@ function filterTags(e) {
 
 
 function filterClasses(e) {
-  let className = findClass(e);
+  let className = getClass(e);
   let found = false;
 
   FORBIDDEN_CLASSES.forEach(function (forbidden) {
@@ -59,12 +70,12 @@ function filterClasses(e) {
 }
 
 
-function findClass(e) {
-  return findProp(e, 'class').toLowerCase();
+function getClass(e) {
+  return getProp(e, 'class').toLowerCase();
 }
 
 
-function findProp(e, prop) {
+function getProp(e, prop) {
   if (!e.attributes) return '';
 
   let pair = e.attributes.find(a => a.key === prop);
@@ -86,31 +97,43 @@ function cleanChildren(e) {
 function clearAttributes(e) {
   if (e.type != 'element') return e;
 
-  let isImage = (e.tagName === 'img');
-  let isAnchor = (e.tagName === 'a');
-  let isIFrame = (e.tagName === 'iframe');
+  let type = getElementType(e);
+  let attributeList = ATTRIBUTES_TO_KEEP[type];
 
-  let isYoutube = false;
-  if (isIFrame) {
-    let src = findProp(e, 'src');
-    isYoutube = (src.indexOf('youtube.com') > 0 || src.indexOf('youtu.be') > 0);
-  }
+  keepAttributes(e, attributeList);
 
-  let isAnother = !isImage && !isAnchor && !isYoutube;
-
-  if (isAnother) e.attributes = [];
-  if (isImage) keepAttributes(e, ['src', 'title', 'alt']);
-  if (isYoutube) keepAttributes(e, ['src', 'width', 'height', 'allowfullscreen', 'frameborder']);
-  if (isAnchor) {
-    keepAttributes(e, ['href', 'title']);
-    e.attributes.push({ key: 'target', value: '_blank' });
-  }
-  if (isIFrame && !isYoutube) {
+  // make sure invalid elements don't get rendered to html
+  if (type === 'INVALID') {
     e.tagName = 'div';
     e.children = [];
   }
 
+  if (type === 'LINK') {
+    e.attributes.push({ key: 'target', value: '_blank' });
+  }
+
   return e;
+}
+
+
+function getElementType(e) {
+  if (e.tagName === 'img') return 'IMAGE';
+  if (e.tagName === 'a') return 'LINK';
+
+  let isIFrame = (e.tagName === 'iframe');
+
+  if (isIFrame) {
+    let src = getProp(e, 'src');
+
+    // TODO: add support to other platforms
+    let isYoutube = (src.indexOf('youtube.com') > 0 || src.indexOf('youtu.be') > 0);
+    if (isYoutube) return 'YOUTUBE';
+  }
+
+  // if is not a youtube video, but is still an iframe, return invalid
+  if (isIFrame) return 'INVALID';
+
+  return 'OTHER';
 }
 
 
@@ -125,7 +148,7 @@ module.exports = {
   filterSpaces,
   filterTags,
   filterClasses,
-  findClass,
+  getClass,
   cleanChildren,
   clearAttributes,
   keepAttributes
