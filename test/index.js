@@ -4,7 +4,7 @@ const Path = require('path');
 
 const parse = require('../index');
 
-let file = './source/real-article1.html';
+let file = './source/real-article2.html';
 let path = Path.join(__dirname, file);
 
 let raw = FS.readFileSync(path, { encoding: 'utf-8' });

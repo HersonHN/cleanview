@@ -11,12 +11,47 @@ function parse(html) {
   let json = himalaya.parse(html);
   let clearedJSON = filters.clear(json)[0];
 
-  modifiers.addModifiers(clearedJSON);
+  let allElements = modifiers.addModifiers(clearedJSON);
 
   let allParagraphs = $('p', clearedJSON);
-  let text = stringify(allParagraphs);
+
+  let parents = countParents(allParagraphs);
+  let maxId = getMaxId(parents);
+
+  let contentParent = allElements[maxId];
+  let text = stringify([contentParent]);
 
   return cleanText(text);
+}
+
+
+function countParents(allParagraphs) {
+  let parents = {};
+  allParagraphs.forEach(function (element) {
+    let id = element.parentId;
+    parents[id] = parents[id] || 0;
+    parents[id]++;
+  });
+
+  return parents;
+}
+
+function getMaxId(obj) {
+  let max = -1;
+  let maxId = -1;
+
+  for (let id in obj) {
+    if (obj.hasOwnProperty(id)) {
+      let value = obj[id];
+
+      if (value > max) {
+        max = value;
+        maxId = id;
+      }
+    }
+  }
+
+  return maxId;
 }
 
 
