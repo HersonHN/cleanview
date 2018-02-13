@@ -5,6 +5,7 @@
   needs to reset to 1 each time `addIds` is called
 ***/
 function addIds(element) {
+  let allElements = {};
   var count = 1;
 
   function newId() {
@@ -14,13 +15,18 @@ function addIds(element) {
   function addId(element) {
     if (!element) return;
 
-    element.id = newId();
+    let id = newId();
+    element.id = id;
+    allElements[id] = element;
+
     if (!element.children) return;
 
     element.children.forEach(addId);
   }
 
   addId(element);
+
+  return allElements;
 }
 
 
@@ -34,8 +40,10 @@ function addParents(element, parentId) {
 
 
 function addModifiers(element) {
-  addIds(element);
+  let elements = addIds(element);
   addParents(element);
+
+  return elements;
 }
 
 module.exports = { addIds, addParents, addModifiers };
