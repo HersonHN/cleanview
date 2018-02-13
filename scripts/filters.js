@@ -1,6 +1,6 @@
 'use strict';
 
-const FORBIDDEN_CLASSES = ['menu', 'navigation', 'side', 'sidenav'];
+const FORBIDDEN_CLASSES = ['menu', 'navigation', 'side', 'submeta', 'hidden', 'hide', 'newsletter', 'button', 'form'];
 
 /*
   It's better to just work with the valid tags instead of removing
@@ -14,7 +14,8 @@ const VALID_TAGS = [
   'a', 'span', 'em', 'strong', 'small', 'sub', 'sup',
   'b', 'i', 'u', 's',
   'img', 'figure', 'figcaption',
-  'pre', 'code'
+  'pre', 'code',
+  'iframe' // this will work only for youtube videos
 ];
 
 
@@ -49,7 +50,7 @@ function filterClasses(e) {
   let found = false;
 
   FORBIDDEN_CLASSES.forEach(function (forbidden) {
-    if (className.split(' ').indexOf(forbidden) > -1) {
+    if (className.indexOf(forbidden) > -1) {
       found = true;
     }
   })
@@ -59,9 +60,14 @@ function filterClasses(e) {
 
 
 function findClass(e) {
+  return findProp(e, 'class').toLowerCase();
+}
+
+
+function findProp(e, prop) {
   if (!e.attributes) return '';
 
-  let pair = e.attributes.find(a => a.key === 'class');
+  let pair = e.attributes.find(a => a.key === prop);
   if (pair) return pair.value;
 
   return '';
@@ -82,13 +88,26 @@ function clearAttributes(e) {
 
   let isImage = (e.tagName === 'img');
   let isAnchor = (e.tagName === 'a');
-  let isAnother = !isImage && !isAnchor;
+  let isIFrame = (e.tagName === 'iframe');
+
+  let isYoutube = false;
+  if (isIFrame) {
+    let src = findProp(e, 'src');
+    isYoutube = (src.indexOf('youtube.com') > 0 || src.indexOf('youtu.be') > 0);
+  }
+
+  let isAnother = !isImage && !isAnchor && !isYoutube;
 
   if (isAnother) e.attributes = [];
   if (isImage) keepAttributes(e, ['src', 'title', 'alt']);
+  if (isYoutube) keepAttributes(e, ['src', 'width', 'height', 'allowfullscreen', 'frameborder']);
   if (isAnchor) {
     keepAttributes(e, ['href', 'title']);
     e.attributes.push({ key: 'target', value: '_blank' });
+  }
+  if (isIFrame && !isYoutube) {
+    e.tagName = 'div';
+    e.children = [];
   }
 
   return e;
