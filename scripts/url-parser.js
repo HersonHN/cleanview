@@ -33,6 +33,8 @@ function fixUrl(element, prop, base) {
 
 
 function addBase(textBase, textURL) {
+  if (textURL.indexOf('base64') > 0) return textURL;
+  
   let base = parse(textBase);
   let url = parse(textURL);
 
