@@ -26,7 +26,7 @@ function parse(html, options) {
 
   // if it's the second time around
   if (!allParagraphs.length) {
-    return nothing(url);
+    return nothing(options);
   }
 
   // the element with more paragraphs will be the the one shown
