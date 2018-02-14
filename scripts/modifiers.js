@@ -12,38 +12,44 @@ function addIds(element) {
     return count++;
   }
 
-  function addId(element) {
-    if (!element) return;
+  navigate(element, function (el, parent) {
+    if (!el) return;
 
     let id = newId();
-    element.id = id;
-    allElements[id] = element;
+    el.id = id;
+    el.parentId = parent.id;
 
-    if (!element.children) return;
+    allElements[id] = el;
 
-    element.children.forEach(addId);
-  }
-
-  addId(element);
+  });
 
   return allElements;
 }
 
 
-function addParents(element, parentId) {
-  element.parentId = parentId;
+function navigate(element, func, parent) {
+  parent = parent || {};
+
+  // if it's an array
+  if (Array.isArray(element)) {
+    element.forEach(function (el) {
+      navigate(el, func, parent);
+    });
+
+    return;
+  }
+
+  // if it's an element
+  if (element.type === 'element') {
+    func(element, parent);
+  }
 
   if (!element.children) return;
 
-  element.children.forEach(child => addParents(child, element.id));
+  element.children.forEach(function (el) {
+    navigate(el, func, element);
+  });
+
 }
 
-
-function addModifiers(element) {
-  let elements = addIds(element);
-  addParents(element);
-
-  return elements;
-}
-
-module.exports = { addIds, addParents, addModifiers };
+module.exports = { addIds };

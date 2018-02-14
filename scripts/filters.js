@@ -30,24 +30,32 @@ const ATTRIBUTES_TO_KEEP = {
 }
 
 
-function clear(json) {
+function clear(json, options) {
+  options = options || {};
+
   json = json
-    .filter(filterSpaces)
-    .filter(filterTags)
-    .filter(filterClasses)
-    .map(clearAttributes)
-    .map(cleanChildren)
+    .filter(e => filterComments(e, options))
+    .filter(e => filterSpaces(e, options))
+    .filter(e => filterTags(e, options))
+    .filter(e => filterClasses(e, options))
+    .map(e => clearAttributes(e, options))
+    .map(e => cleanChildren(e, options))
 
   return json;
 }
 
 
-function filterSpaces(e) {
+function filterComments(e, options) {
+  return (e.type == 'text' || e.type == 'element');
+}
+
+
+function filterSpaces(e, options) {
   return !(e.type == 'text' && e.content.trim() == '');
 }
 
 
-function filterTags(e) {
+function filterTags(e, options) {
   let tag = (e.tagName || '').toLowerCase();
   let isText = (e.type === 'text');
   let isValidTag = (VALID_TAGS.indexOf(tag) > -1);
@@ -56,7 +64,9 @@ function filterTags(e) {
 }
 
 
-function filterClasses(e) {
+function filterClasses(e, options) {
+  if (options.includeClasses) return true;
+
   let className = getClass(e);
   let found = false;
 
@@ -85,16 +95,16 @@ function getProp(e, prop) {
 }
 
 
-function cleanChildren(e) {
+function cleanChildren(e, options) {
   if (e.children && e.children.length > 0) {
-    e.children = clear(e.children);
+    e.children = clear(e.children, options);
   }
 
   return e;
 }
 
 
-function clearAttributes(e) {
+function clearAttributes(e, options) {
   if (e.type != 'element') return e;
 
   let type = getElementType(e);

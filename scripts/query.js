@@ -9,6 +9,14 @@ function $(tag, element) {
 
 
 function search(tag, element, founds) {
+
+  if (Array.isArray(element)) {
+    element.forEach(function (el) {
+      search(tag, el, founds);
+    })
+    return;
+  }
+
   // If the tagname match, add the element and return
   if (element.tagName === tag) {
     founds.push(element);
