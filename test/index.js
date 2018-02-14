@@ -4,10 +4,16 @@ const Path = require('path');
 
 const parse = require('../index');
 
-let file = './source/real-article2.html';
-let path = Path.join(__dirname, file);
+let name = 'real-article2';
+let articleFile = `./source/${name}.html`;
+let urlFile = `./source/${name}.txt`;
 
-let raw = FS.readFileSync(path, { encoding: 'utf-8' });
-let clean = parse(raw);
+let articlePath = Path.join(__dirname, articleFile);
+let urlPath = Path.join(__dirname, urlFile);
+
+let article = FS.readFileSync(articlePath, { encoding: 'utf-8' });
+let url = FS.readFileSync(urlPath, { encoding: 'utf-8' }).trim();
+
+let clean = parse(article, { url: url });
 
 console.log(clean);
