@@ -9,9 +9,9 @@ const VALID_TAGS = [
   'div', 'main', 'section', 'article',
   'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
   'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
-  'a', 'span', 'em', 'strong', 'small', 'sub', 'sup',
-  'b', 'i', 'u', 's',
-  'img', 'figure', 'figcaption',
+  'a', 'span', 'small', 'sub', 'sup',
+  'b', 'i', 'u', 's', 'em', 'strong',
+  'img', 'figure', 'figcaption', 'picture',
   'pre', 'code',
   'iframe' // this will render only for videos
 ];
