@@ -4,14 +4,22 @@ const himalaya = require('himalaya');
 
 const filters = require('./filters');
 const modifiers = require('./modifiers');
+const urlParser = require('./url-parser');
 const $ = require('./query');
 
 
-function parse(html) {
+function parse(html, options) {
+  options = options || {};
+  let url = options.url || '';
+
   let json = himalaya.parse(html);
   let clearedJSON = filters.clear(json)[0];
 
   let allElements = modifiers.addModifiers(clearedJSON);
+
+  if (url) {
+    urlParser.addBaseUrl(allElements, url);
+  }
 
   let allParagraphs = $('p', clearedJSON);
 

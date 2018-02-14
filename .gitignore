@@ -132,3 +132,4 @@ $RECYCLE.BIN/
 # don't include real articles
 real-*.html
 real-*.txt
+test.html

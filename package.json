@@ -7,11 +7,13 @@
     "test": "test"
   },
   "dependencies": {
-    "himalaya": "^1.0.0"
+    "himalaya": "^1.0.0",
+    "iso-path-join": "^1.0.6",
+    "url-parse": "^1.2.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/index.js"
   },
   "repository": {
     "type": "git",
