@@ -7,7 +7,7 @@
 const VALID_TAGS = [
   'html', 'body',
   'div', 'main', 'section', 'article',
-  'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+  'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'br', 'hr',
   'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
   'a', 'span', 'small', 'sub', 'sup',
   'b', 'i', 'u', 's', 'em', 'strong',
@@ -29,19 +29,45 @@ const ATTRIBUTES_TO_KEEP = {
   INVALID: []
 }
 
-
-function clear(json, options) {
+function clean(json, options) {
   options = options || {};
 
+  json = cleanOuterToInner(json, options);
+  json = cleanInnerToOuter(json, options);
+
+  return json;
+}
+
+
+function cleanOuterToInner(json, options) {
   json = json
     .filter(e => filterComments(e, options))
     .filter(e => filterSpaces(e, options))
     .filter(e => filterTags(e, options))
     .filter(e => filterClasses(e, options))
-    .map(e => clearAttributes(e, options))
-    .map(e => cleanChildren(e, options))
+    .map(e => cleanAttributes(e, options))
+    .map(e => passToChildren(e, options, cleanOuterToInner))
 
   return json;
+}
+
+function cleanInnerToOuter(json, options) {
+  json = json
+    .map(e => passToChildren(e, options, cleanInnerToOuter))
+    .filter(e => filterEmptyNodes(e, options))
+
+  return json;
+}
+
+
+function filterEmptyNodes(e) {
+  if (e.type == 'text') return true;
+  if (e.tagName == 'img') return true;
+  if (e.tagName == 'iframe') return true;
+  if (e.tagName == 'br') return true;
+  if (e.tagName == 'hr') return true;
+
+  return (e.children.length > 0);
 }
 
 
@@ -95,16 +121,18 @@ function getProp(e, prop) {
 }
 
 
-function cleanChildren(e, options) {
+function passToChildren(e, options, func) {
+  if (!e) return e;
+
   if (e.children && e.children.length > 0) {
-    e.children = clear(e.children, options);
+    e.children = func(e.children, options, func);
   }
 
   return e;
 }
 
 
-function clearAttributes(e, options) {
+function cleanAttributes(e, options) {
   if (e.type != 'element') return e;
 
   let type = getElementType(e);
@@ -153,13 +181,4 @@ function keepAttributes(e, list) {
   return e;
 }
 
-module.exports = {
-  clear,
-  filterSpaces,
-  filterTags,
-  filterClasses,
-  getClass,
-  cleanChildren,
-  clearAttributes,
-  keepAttributes
-};
+module.exports = { clean };

@@ -46,7 +46,7 @@ function parseJSON(html, options) {
   let json = himalaya.parse(html);
 
   // clean the elements
-  let clearedJSON = filters.clear(json, options);
+  let clearedJSON = filters.clean(json, options);
 
   // add ids to each one
   let allElements = modifiers.addIds(clearedJSON);
