@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Clean View</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation-float.min.css">
+    <script src="cleanview.js"></script>
+    <style media="screen">
+      #output {
+        padding: 3rem;
+        border: 1px solid #666;
+      }
+      #output:empty {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row">
+      <h1>Clean View</h1>
+      <p>Paste the html from the article you want to clean.</p>
+
+      <form>
+        <div class="grid-container">
+          <div class="grid-x grid-padding-x">
+            <div class="cell">
+              <label>HTML Content
+                <textarea id="input" width="100%" rows="5"></textarea>
+              </label>
+            </div>
+            <div class="cell">
+              <label>(aditional) Source URL
+                <input type="text" id="url"/>
+              </label>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <button class="button" id="parse">Parse HTML</button>
+
+
+      <div id="output"></div>
+    </div>
+
+    <script type="text/javascript">
+      (function () {
+        var inputContent = document.getElementById('input');
+        var inputURL = document.getElementById('url');
+        var outputDiv = document.getElementById('output');
+        var parseButton = document.getElementById('parse');
+
+        parseButton.onclick = function () {
+          var input = inputContent.value;
+          var url = inputURL.value;
+          var output = cleanview(input, { url: url });
+          outputDiv.innerHTML = output.trim();
+        }
+      }());
+    </script>
+  </body>
+</html>
