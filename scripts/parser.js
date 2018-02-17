@@ -7,9 +7,11 @@ const modifiers = require('./modifiers');
 const urlParser = require('./url-parser');
 const $ = require('./query');
 
+const MIN_RATIO = 0.75;
 
 function parse(html, options) {
   options = options || {};
+  options.url = options.url || '';
 
   let { allElements, allParagraphs, clearedJSON } = parseJSON(html, options);
 
@@ -65,16 +67,21 @@ function getContentElement(allElements, allParagraphs) {
   let contentParent = allElements[maxId];
 
   let ratio = 0;
+  let count = 0;
   do {
     let contentParagraphs = $('p', contentParent);
     let contentParagraphsCount = contentParagraphs.length;
     ratio = contentParagraphsCount / totalParagraphs;
 
-    if (ratio < 0.5) {
+    if (ratio < MIN_RATIO) {
       let id = contentParent.parentId;
       contentParent = allElements[id];
     }
-  } while (contentParent && ratio <= 0.5);
+
+    // prevent infinite loops
+    count++;
+
+  } while (contentParent && ratio <= MIN_RATIO && count < 4);
 
   return contentParent;
 }
