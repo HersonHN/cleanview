@@ -29,14 +29,9 @@ function parse(html, options) {
     return nothing(options);
   }
 
-  // the element with more paragraphs will be the the one shown
-  let parents = countParents(allParagraphs);
-  let maxId = getMaxId(parents);
+  let contentElement = getContentElement(allElements, allParagraphs);
 
-
-  let contentParent = allElements[maxId];
-
-  return stringify([contentParent]);
+  return stringify([contentElement]);
 }
 
 
@@ -57,6 +52,31 @@ function parseJSON(html, options) {
   let allParagraphs = $('p', clearedJSON);
 
   return { allParagraphs, clearedJSON, allElements };
+}
+
+
+function getContentElement(allElements, allParagraphs) {
+  let totalParagraphs = allParagraphs.length;
+
+  // the element with more paragraphs will be the the one shown
+  let parents = countParents(allParagraphs);
+  let maxId = getMaxId(parents);
+
+  let contentParent = allElements[maxId];
+
+  let ratio = 0;
+  do {
+    let contentParagraphs = $('p', contentParent);
+    let contentParagraphsCount = contentParagraphs.length;
+    ratio = contentParagraphsCount / totalParagraphs;
+
+    if (ratio < 0.5) {
+      let id = contentParent.parentId;
+      contentParent = allElements[id];
+    }
+  } while (contentParent && ratio <= 0.5);
+
+  return contentParent;
 }
 
 
@@ -98,13 +118,16 @@ function getMaxId(obj) {
 
 function stringify(json) {
   let output = himalaya.stringify(json);
-  output = output.replace(/<\/p>/g, '</p>\n');
 
   return output
-    .replace(/<span>/g, '')
-    .replace(/<\/span>/g, '')
+    .replace(/<html>/g, '')
+    .replace(/<body>/g, '')
     .replace(/<div>/g, '')
-    .replace(/<\/div>/g, '');
+    .replace(/<span>/g, '')
+    .replace(/<\/html>/g, '')
+    .replace(/<\/body>/g, '')
+    .replace(/<\/div>/g, '')
+    .replace(/<\/span>/g, '')
 }
 
 
