@@ -6,7 +6,7 @@
 */
 const VALID_TAGS = [
   'html', 'body',
-  'div', 'main', 'section', 'article',
+  'div', 'main', 'section', 'article', 'quote', 'blockquote',
   'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'br', 'hr',
   'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
   'a', 'span', 'small', 'sub', 'sup',
