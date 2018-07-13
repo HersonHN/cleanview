@@ -10,7 +10,7 @@ const VALID_TAGS = [
   'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'br', 'hr',
   'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
   'a', 'span', 'small', 'sub', 'sup',
-  'b', 'i', 'u', 's', 'em', 'strong',
+  'b', 'i', 'u', 's', 'em', 'strong', 'q', 'font', 'center',
   'img', 'figure', 'figcaption', 'picture',
   'pre', 'code',
   'iframe' // this will render only for videos
