@@ -126,7 +126,7 @@ function getMaxId(obj) {
 function stringify(json) {
   let output = himalaya.stringify(json);
 
-  return output
+  output
     .replace(/<html>/g, '')
     .replace(/<body>/g, '')
     .replace(/<div>/g, '')
@@ -134,10 +134,28 @@ function stringify(json) {
     .replace(/<\/html>/g, '')
     .replace(/<\/body>/g, '')
     .replace(/<\/div>/g, '')
-    .replace(/<\/span>/g, ' ')
-    .replace(/<\/a>/g, '</a> ')
+    .replace(/<\/span>/g, ' ');
+  
+  return addSomeSpaces(output);
 }
 
+function addSomeSpaces(str) {
+  // @NOTE: Sadly I'll forget what this regex do.
+  
+  // The idea is to add a single space between a closing tag and a opening tag
+  // who follows it.
+
+  // So a group of tags like this:
+  // <p><span></span><span></span><b><a></a></b></p><i><a></a><a></a></i>
+  // will turn into this:
+  // <p><span></span> <span></span> <b><a></a></b></p> <i><a></a> <a></a></i>
+  
+  // The reason to do this is because, if there's two anchor tags with nothing 
+  // between them, like: [A link][Another link], on the browser they would look
+  // like [A linkAnother link], and that ruins the readability of the text.
+
+  return str.replace(/(<\/[^>]+><)([^\/])/g, found => found.replace('><', '> <'));
+}
 
 
 module.exports = parse;
