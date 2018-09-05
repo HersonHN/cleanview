@@ -126,7 +126,7 @@ function getMaxId(obj) {
 function stringify(json) {
   let output = himalaya.stringify(json);
 
-  output
+  output = output
     .replace(/<html>/g, '')
     .replace(/<body>/g, '')
     .replace(/<div>/g, '')
