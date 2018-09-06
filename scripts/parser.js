@@ -134,7 +134,7 @@ function stringify(json) {
     .replace(/<\/html>/g, '')
     .replace(/<\/body>/g, '')
     .replace(/<\/div>/g, '')
-    .replace(/<\/span>/g, ' ');
+    .replace(/<\/span>/g, '');
 
     return addSomeSpaces(output);
 }
