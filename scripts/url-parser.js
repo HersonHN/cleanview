@@ -19,7 +19,7 @@ function fixUrl(element, prop, base) {
   element.attributes = element.attributes.map(function (attr) {
     if (attr.key !== prop) return attr;
 
-    let url = attr.value;
+    let url = (attr.value || '').trim();
     let isFullPath = url.indexOf('//') > -1;
 
     if (isFullPath) return attr;
