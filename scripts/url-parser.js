@@ -38,8 +38,9 @@ function addBase(textBase, textURL) {
   let base = parse(textBase);
   let url = parse(textURL);
 
-  // if the url is relative
-  if (url.pathname.indexOf('/') != 0) {
+  let isRelativeURL = url.pathname.indexOf('/') != 0 || url.pathname == '/';
+
+  if (isRelativeURL) {
     let baseURL = removeLastToken(base.pathname);
     let relativeURL = url.pathname;
     let mergedURL = join(baseURL, relativeURL);

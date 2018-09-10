@@ -12,7 +12,7 @@ const VALID_TAGS = [
   'a', 'span', 'small', 'sub', 'sup',
   'b', 'i', 'u', 's', 'em', 'strong', 'q', 'font', 'center',
   'img', 'figure', 'figcaption', 'picture',
-  'pre', 'code',
+  'pre', 'code', 'xmp',
   'iframe' // this will render only for videos
 ];
 
@@ -24,6 +24,7 @@ const FORBIDDEN_CLASSES = ['menu', 'navigation', 'side', 'submeta', 'hidden', 'h
 const ATTRIBUTES_TO_KEEP = {
   IMAGE: ['src', 'title', 'alt'],
   LINK: ['href', 'title'],
+  SOURCE: ['srcset'],
   YOUTUBE: ['src', 'width', 'height', 'allowfullscreen', 'frameborder'],
   OTHER: [],
   INVALID: []
@@ -157,6 +158,7 @@ function cleanAttributes(e, options) {
 function getElementType(e) {
   if (e.tagName === 'img') return 'IMAGE';
   if (e.tagName === 'a') return 'LINK';
+  if (e.tagName === 'source') return 'SOURCE';
 
   let isIFrame = (e.tagName === 'iframe');
 
