@@ -7,7 +7,7 @@ const modifiers = require('./modifiers');
 const urlParser = require('./url-parser');
 const $ = require('./query');
 
-const MIN_RATIO = 0.75;
+const MIN_DEFAULT_RATIO = 0.75;
 
 function parse(html, options) {
   options = options || {};
@@ -32,7 +32,7 @@ function parse(html, options) {
     return nothing(options);
   }
 
-  let contentElement = getContentElement(allElements, allParagraphs);
+  let contentElement = getContentElement(allElements, allParagraphs, options);
 
   return stringify([contentElement]);
 }
@@ -58,7 +58,8 @@ function parseJSON(html, options) {
 }
 
 
-function getContentElement(allElements, allParagraphs) {
+function getContentElement(allElements, allParagraphs, options) {
+  let MIN_RATIO = options.minRatio || MIN_DEFAULT_RATIO;
   let totalParagraphs = allParagraphs.length;
 
   // the element with more paragraphs will be the the one shown
