@@ -17,6 +17,10 @@ const VALID_TAGS = [
 ];
 
 
+const VALID_TAGS_SECOND_TRY = [
+  ...VALID_TAGS, 'header'
+];
+
 // TODO: forbidden classes might be passed as a parameter in the main function's config
 const FORBIDDEN_CLASSES = ['menu', 'navigation', 'side', 'submeta', 'hidden', 'hide', 'newsletter', 'button', 'form'];
 
@@ -48,7 +52,7 @@ function cleanOuterToInner(json, options) {
     .filter(e => filterClasses(e, options))
     .map(e => cleanAttributes(e, options))
     .map(e => passToChildren(e, options, cleanOuterToInner))
-
+    
   return json;
 }
 
@@ -68,6 +72,8 @@ function filterEmptyNodes(e) {
   if (e.tagName == 'br') return true;
   if (e.tagName == 'hr') return true;
 
+  if (!e.children) return true;
+
   return (e.children.length > 0);
 }
 
@@ -83,9 +89,11 @@ function filterSpaces(e, options) {
 
 
 function filterTags(e, options) {
+  let TAGS = options.secondTry ? VALID_TAGS_SECOND_TRY : VALID_TAGS;
+
   let tag = (e.tagName || '').toLowerCase();
   let isText = (e.type === 'text');
-  let isValidTag = (VALID_TAGS.indexOf(tag) > -1);
+  let isValidTag = (TAGS.indexOf(tag) > -1);
 
   return (isText || isValidTag);
 }

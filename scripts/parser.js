@@ -17,6 +17,7 @@ function parse(html, options) {
 
   // If there's no paragraphs from the search, try again without filtering classes
   if (!allParagraphs.length) {
+    options.secondTry = true;
     options.includeClasses = true;
 
     let result = parseJSON(html, options);
