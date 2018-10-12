@@ -1,29 +1,11 @@
 'use strict';
 
-/*
-  It's better to just work with the valid tags instead of removing
-  all the invalid ones, which can be difficult for obscure tagnames
-*/
-const VALID_TAGS = [
-  'html', 'body',
-  'div', 'main', 'section', 'article', 'quote', 'blockquote',
-  'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'br', 'hr',
-  'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
-  'a', 'span', 'small', 'sub', 'sup',
-  'b', 'i', 'u', 's', 'em', 'strong', 'q', 'font', 'center',
-  'img', 'figure', 'figcaption', 'picture',
-  'pre', 'code', 'xmp',
-  'iframe' // this will render only for videos
-];
-
+const VALID_TAGS = require('../defaults/valid-tags');
+const FORBIDDEN_CLASSES = require('../defaults/forbidden-classes');
 
 const VALID_TAGS_SECOND_TRY = [
   ...VALID_TAGS, 'header'
 ];
-
-// TODO: forbidden classes might be passed as a parameter in the main function's config
-const FORBIDDEN_CLASSES = ['menu', 'navigation', 'side', 'submeta', 'hidden', 'hide', 'newsletter', 'button', 'form'];
-
 
 const ATTRIBUTES_TO_KEEP = {
   IMAGE: ['src', 'title', 'alt'],
@@ -91,9 +73,12 @@ function filterSpaces(e, options) {
 function filterTags(e, options) {
   let TAGS = options.secondTry ? VALID_TAGS_SECOND_TRY : VALID_TAGS;
 
+  let aditionalTags = options.includeTags || [];
+  let tags = [...TAGS, ...aditionalTags];
+
   let tag = (e.tagName || '').toLowerCase();
   let isText = (e.type === 'text');
-  let isValidTag = (TAGS.indexOf(tag) > -1);
+  let isValidTag = (tags.indexOf(tag) > -1);
 
   return (isText || isValidTag);
 }
@@ -101,11 +86,13 @@ function filterTags(e, options) {
 
 function filterClasses(e, options) {
   if (options.includeClasses) return true;
+  let forbiddenClasses = options.forbiddenClasses || [];
+  let FORBIDDEN = [...FORBIDDEN_CLASSES, ...forbiddenClasses];
 
   let className = getClass(e);
   let found = false;
 
-  FORBIDDEN_CLASSES.forEach(function (forbidden) {
+  FORBIDDEN.forEach(function (forbidden) {
     if (className.indexOf(forbidden) > -1) {
       found = true;
     }

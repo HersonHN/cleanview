@@ -14,6 +14,6 @@ let urlPath = Path.join(__dirname, urlFile);
 let article = FS.readFileSync(articlePath, { encoding: 'utf-8' });
 let url = FS.readFileSync(urlPath, { encoding: 'utf-8' }).trim();
 
-let clean = parse(article, { url: url });
+let clean = parse(article, { url: url, includeTags: ['header'] });
 
 console.log(clean);

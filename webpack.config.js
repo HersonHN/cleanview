@@ -9,19 +9,20 @@ module.exports = {
     filename: 'cleanview.js',
     library: 'cleanview'
   },
+  mode: 'production',
   plugins: [
     new UglifyJsPlugin()
   ],
   module: {
-    loaders: [
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015']
-        }
-      }
-    ]
+    // loaders: [
+    //   {
+    //     test: /\.js$/,
+    //     loader: 'babel-loader',
+    //     query: {
+    //       presets: ['es2015']
+    //     }
+    //   }
+    // ]
   },
   stats: {
     colors: true
