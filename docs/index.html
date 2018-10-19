@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation-float.min.css">
     <script src="cleanview.js"></script>
     <style media="screen">
+      .page-container {
+        max-width: 980px;
+        padding: 1rem;
+        margin: auto;
+      }
       #output {
         padding: 3rem;
         border: 1px solid #666;
@@ -16,16 +21,25 @@
     </style>
   </head>
   <body>
-    <div class="row">
+    <div class="page-container">
       <h1>Clean View</h1>
-      <p>Paste the html from the article you want to clean.</p>
+      <p>Clean the content of html articles, same job as services like Instapaper/Readability.<br>
+        It doesn't use DOM or Virtual DOM in the process.
+      </p>
 
+      <p>
+        Check source on <a href="https://www.github.com/hersonhn/cleanview">Github</a>
+        or <a href="https://npmjs.com/package/cleanview">npm</a>
+      </p>
+
+      <h3>Live Example</h3>
       <form>
+        <caption>Paste the html from the article you want to clean</caption>
         <div class="grid-container">
           <div class="grid-x grid-padding-x">
             <div class="cell">
               <label>HTML Content
-                <textarea id="input" width="100%" rows="5"></textarea>
+                <textarea id="input" width="100%" rows="10"></textarea>
               </label>
             </div>
             <div class="cell">
@@ -36,9 +50,7 @@
           </div>
         </div>
       </form>
-
       <button class="button" id="parse">Parse HTML</button>
-
 
       <div id="output"></div>
     </div>
