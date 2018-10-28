@@ -8,7 +8,7 @@ const VALID_TAGS_SECOND_TRY = [
 ];
 
 const ATTRIBUTES_TO_KEEP = {
-  IMAGE: ['src', 'title', 'alt'],
+  IMAGE: ['src', 'title', 'alt', 'data-src'],
   LINK: ['href', 'title'],
   SOURCE: ['srcset'],
   YOUTUBE: ['src', 'width', 'height', 'allowfullscreen', 'frameborder'],
@@ -144,6 +144,17 @@ function cleanAttributes(e, options) {
 
   if (type === 'LINK') {
     e.attributes.push({ key: 'target', value: '_blank' });
+  }
+
+  if (type === 'IMAGE') {
+    // Adding the `data-src` prop as the src for the image
+    // this fix lazyloading images
+
+    let src = getProp(e, 'src');
+    let dataSRC = getProp(e, 'data-src');
+    if (!src && dataSRC) {
+      e.attributes.push({ key: 'src', value: dataSRC });
+    }
   }
 
   return e;
