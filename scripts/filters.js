@@ -185,7 +185,8 @@ function getElementType(e) {
 
 function keepAttributes(e, list) {
   e.attributes = e.attributes
-    .filter(attr => attr.value && list.indexOf(attr.key) > -1);
+    .map(a => ({ key: a.key.toLowerCase(), value: a.value }))
+    .filter(attr => attr.value && list.indexOf(attr.key) > -1)
   return e;
 }
 
