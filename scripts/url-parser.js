@@ -33,24 +33,7 @@ function merge(textBase, textURL) {
   if (textURL.indexOf('//') > -1) return textURL;
   if (textURL.indexOf('base64') > -1) return textURL;
 
-  let base = parse(textBase);
-  let url = parse(textURL);
-
-  let isRelativeURL = url.pathname.indexOf('/') != 0 || url.pathname == '/';
-
-  if (isRelativeURL) {
-    let baseURL = removeLastToken(base.pathname);
-    let relativeURL = url.pathname;
-    let mergedURL = join(baseURL, relativeURL);
-
-    url.set('pathname', mergedURL);
-  }
-
-  url.set('host', base.host);
-  url.set('hostname', base.hostname);
-  url.set('protocol', base.protocol);
-  url.set('host', base.host);
-  url.set('origin', base.origin);
+  let url = parse(textURL, textBase);
 
   return url.href;
 }
