@@ -18,13 +18,8 @@ function addBaseUrl(elements, baseURL) {
 function fixUrl(element, prop, base) {
   element.attributes = element.attributes.map(function (attr) {
     if (attr.key !== prop) return attr;
-
-    let url = (attr.value || '').trim();
-    let isFullPath = url.indexOf('//') > -1;
-
-    if (isFullPath) return attr;
-
-    url = addBase(base, url);
+    let url = attr.value;
+    url = merge(base, url);
     attr.value = url;
 
     return attr;
@@ -32,9 +27,12 @@ function fixUrl(element, prop, base) {
 }
 
 
-function addBase(textBase, textURL) {
-  if (textURL.indexOf('base64') > 0) return textURL;
-  
+function merge(textBase, textURL) {
+  textURL = (textURL || '').trim();
+
+  if (textURL.indexOf('//') > -1) return textURL;
+  if (textURL.indexOf('base64') > -1) return textURL;
+
   let base = parse(textBase);
   let url = parse(textURL);
 
@@ -64,4 +62,4 @@ function removeLastToken(string) {
 }
 
 
-module.exports = { addBaseUrl };
+module.exports = { addBaseUrl, merge };
