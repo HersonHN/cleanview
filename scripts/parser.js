@@ -142,10 +142,11 @@ function stringify(json) {
 }
 
 function addSomeSpaces(str) {
-  // The reason to do this is because, if there's two anchor tags with nothing
-  // between them, like: [Link One][Link Two], on the browser they would look
-  // like [Link OneLink Two], and that ruins the readability.
-  return str.replace(/\/a><a/gi, '/a> <a');
+  // this will add a space before each anchor tag, except for those
+  // preceded by: ( " [ { - – — _ ~ @
+
+  // the reason to do this is to prevent space collapsing before links
+  return str.replace(/([^\(\"\[\{\-\–\—\_\~\@])<a/gi, '$1 <a');
 }
 
 
