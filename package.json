@@ -1,6 +1,6 @@
 {
   "name": "cleanview",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Clean the content of html articles",
   "main": "index.js",
   "directories": {

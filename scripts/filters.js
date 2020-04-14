@@ -19,11 +19,48 @@ const ATTRIBUTES_TO_KEEP = {
 function clean(json, options) {
   options = options || {};
 
+  json = addFlags(json, options);
+
   json = cleanOuterToInner(json, options);
   json = cleanInnerToOuter(json, options);
 
   return json;
 }
+
+
+function addFlags(json, options) {
+  json = addFlagForPre(json, options);
+
+  return json;
+}
+
+
+function addFlagForPre(json, options) {
+  return json.map(e => iterateChildren(e, options, (child, options, parent) => {
+      if (parent.tagName === 'pre' || parent.insidePre) {
+        child.insidePre = true;
+      }
+      return child;
+    }))
+}
+
+
+function iterateChildren(element, options, func) {
+  if (!element) return element;
+
+  if (!element.children) return element;
+  if (!element.children.length) return element;
+
+  element.children = element.children
+    .map(child => {
+      let modified = func(child, options, element);
+      iterateChildren(child, options, func);
+      return modified;
+    })
+
+  return element;
+}
+
 
 
 function cleanOuterToInner(json, options) {
@@ -34,7 +71,7 @@ function cleanOuterToInner(json, options) {
     .filter(e => filterClasses(e, options))
     .map(e => cleanAttributes(e, options))
     .map(e => passToChildren(e, options, cleanOuterToInner))
-    
+
   return json;
 }
 
@@ -66,7 +103,10 @@ function filterComments(e, options) {
 
 
 function filterSpaces(e, options) {
-  return !(e.type == 'text' && e.content.trim() == '');
+  // do not remove spaces when inside a <pre> tag
+  if (e.insidePre) return true;
+  let blankSpace = (e.type == 'text' && e.content.trim() == '');
+  return !blankSpace;
 }
 
 
