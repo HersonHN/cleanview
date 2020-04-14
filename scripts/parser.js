@@ -143,9 +143,9 @@ function stringify(json) {
 
 function addSomeSpaces(str) {
   // The reason to do this is because, if there's two anchor tags with nothing
-  // between them, like: [A link][Another link], on the browser they would look
-  // like [A linkAnother link], and that ruins the readability.
-  return str.replace(/<\/a>/gi, '</a> ');
+  // between them, like: [Link One][Link Two], on the browser they would look
+  // like [Link OneLink Two], and that ruins the readability.
+  return str.replace(/<a/gi, ' <a');
 }
 
 
