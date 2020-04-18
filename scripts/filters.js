@@ -8,7 +8,7 @@ const VALID_TAGS_SECOND_TRY = [
 ];
 
 const ATTRIBUTES_TO_KEEP = {
-  IMAGE: ['src', 'title', 'alt', 'data-src'],
+  IMAGE: ['src', 'title', 'alt', 'data-src', 'srcset', 'data-srcset'],
   LINK: ['href', 'title'],
   SOURCE: ['srcset'],
   YOUTUBE: ['src', 'width', 'height', 'allowfullscreen', 'frameborder'],
@@ -187,17 +187,20 @@ function cleanAttributes(e, options) {
   }
 
   if (type === 'IMAGE') {
-    // Adding the `data-src` prop as the src for the image
-    // this fix lazyloading images
-
-    let src = getProp(e, 'src');
-    let dataSRC = getProp(e, 'data-src');
-    if (!src && dataSRC) {
-      e.attributes.push({ key: 'src', value: dataSRC });
-    }
+    mirrorAttribute(e, 'data-src', 'src');
+    mirrorAttribute(e, 'data-srcset', 'srcset');
   }
 
   return e;
+}
+
+
+function mirrorAttribute(e, source, target) {
+  let sourceValue = getProp(e, source);
+  let targetValue = getProp(e, target);
+  if (sourceValue && !targetValue) {
+    e.attributes.push({ key: target, value: sourceValue });
+  }
 }
 
 

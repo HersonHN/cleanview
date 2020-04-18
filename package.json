@@ -1,13 +1,13 @@
 {
   "name": "cleanview",
-  "version": "1.5.7",
+  "version": "1.5.9",
   "description": "Clean the content of html articles",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "himalaya": "^1.0.0",
+    "himalaya": "^1.1.0",
     "iso-path-join": "^1.0.6",
     "url-parse": "^1.2.0"
   },
