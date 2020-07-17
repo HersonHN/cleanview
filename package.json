@@ -39,5 +39,6 @@
   "bugs": {
     "url": "https://github.com/HersonHN/cleanview/issues"
   },
-  "homepage": "https://github.com/HersonHN/cleanview#readme"
+  "homepage": "https://github.com/HersonHN/cleanview#readme",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }
