@@ -1,19 +1,26 @@
-"use strict";
+import { HimalayaElement } from "../types/himalaya";
+import { isNode } from "./helpers";
 
-function $(tag, element) {
-  let founds = [];
+export function $(tag: string, element: HimalayaElement | HimalayaElement[]) {
+  const founds: HimalayaElement[] = [];
   search(tag, element, founds);
 
   return founds;
 }
 
-function search(tag, element, founds) {
+function search(
+  tag: string,
+  element: HimalayaElement | HimalayaElement[],
+  founds: HimalayaElement[]
+): void {
   if (Array.isArray(element)) {
     element.forEach(function (el) {
       search(tag, el, founds);
     });
     return;
   }
+
+  if (!isNode(element)) return;
 
   // If the tagname match, add the element and return
   if (element.tagName === tag) {
@@ -29,5 +36,3 @@ function search(tag, element, founds) {
     search(tag, el, founds);
   });
 }
-
-module.exports = $;
