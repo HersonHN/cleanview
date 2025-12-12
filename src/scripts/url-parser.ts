@@ -1,39 +1,39 @@
 import parse from "url-parse";
+import { NodeElement } from "../types/himalaya";
 
-export function addBaseUrl(elements, baseURL) {
+export function addBaseUrl(elements: any, baseURL: string) {
   for (let id in elements) {
     if (elements.hasOwnProperty(id)) {
-      let el = elements[id];
+      const el = elements[id];
       if (el.tagName === "a") fixUrl(el, "href", baseURL);
       if (el.tagName === "img") fixUrl(el, "src", baseURL);
     }
   }
 }
 
-function fixUrl(element, prop, base) {
+function fixUrl(element: NodeElement, prop: string, base: string) {
   element.attributes = element.attributes.map(function (attr) {
     if (attr.key !== prop) return attr;
-    let url = attr.value;
-    url = merge(base, url);
+    const url = merge(base, String(attr.value));
     attr.value = url;
 
     return attr;
   });
 }
 
-export function merge(textBase, textURL) {
+export function merge(textBase: string, textURL: string): string {
   textURL = (textURL || "").trim();
 
   if (textURL.indexOf("//") > -1) return textURL;
   if (textURL.indexOf("base64") > -1) return textURL;
 
-  let url = parse(textURL, textBase);
+  const url = parse(textURL, textBase);
 
   return url.href;
 }
 
-function removeLastToken(string) {
-  let tokens = string.split("/");
+function removeLastToken(string: string) {
+  const tokens = string.split("/");
   tokens.pop();
   return tokens.join("/") + "/";
 }
