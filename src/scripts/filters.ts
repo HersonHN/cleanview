@@ -1,11 +1,26 @@
 "use strict";
 
-const VALID_TAGS = require("../defaults/valid-tags");
-const FORBIDDEN_CLASSES = require("../defaults/forbidden-classes");
+import VALID_TAGS from "../defaults/valid-tags";
+import FORBIDDEN_CLASSES from "../defaults/forbidden-classes";
+import type {
+  CustomNodeElement,
+  IterateFunction,
+  ParserOptions,
+  RecursiveFunc,
+} from "../types/cleanview";
+import type { HimalayaElement, NodeElement } from "../types/himalaya";
+
+type AttributeType =
+  | "IMAGE"
+  | "LINK"
+  | "SOURCE"
+  | "YOUTUBE"
+  | "OTHER"
+  | "INVALID";
 
 const VALID_TAGS_SECOND_TRY = [...VALID_TAGS, "header"];
 
-const ATTRIBUTES_TO_KEEP = {
+const ATTRIBUTES_TO_KEEP: Record<AttributeType, string[]> = {
   IMAGE: ["src", "title", "alt", "data-src", "srcset", "data-srcset"],
   LINK: ["href", "title"],
   SOURCE: ["srcset"],
@@ -14,7 +29,7 @@ const ATTRIBUTES_TO_KEEP = {
   INVALID: [],
 };
 
-function clean(json, options) {
+export function clean(json: HimalayaElement[], options: ParserOptions) {
   options = options || {};
 
   json = addFlags(json, options);
@@ -25,13 +40,29 @@ function clean(json, options) {
   return json;
 }
 
-function addFlags(json, options) {
+function addFlags(json: HimalayaElement[], options: ParserOptions) {
   json = addFlagForPre(json, options);
 
   return json;
 }
 
-function addFlagForPre(json, options) {
+function isComment(e: HimalayaElement) {
+  return e.type === "comment";
+}
+
+function isText(e: HimalayaElement) {
+  return e.type === "text";
+}
+
+function isNode(e: HimalayaElement) {
+  return e.type === "element";
+}
+
+function isNodeWithChildren(e: HimalayaElement) {
+  return isNode(e) && e.children && e.children.length > 0;
+}
+
+function addFlagForPre(json: HimalayaElement[], options: ParserOptions) {
   return json.map((e) =>
     iterateChildren(e, options, (child, options, parent) => {
       if (parent.tagName === "pre" || parent.insidePre) {
@@ -42,14 +73,20 @@ function addFlagForPre(json, options) {
   );
 }
 
-function iterateChildren(element, options, func) {
+function iterateChildren(
+  element: HimalayaElement,
+  options: ParserOptions,
+  func: IterateFunction
+): HimalayaElement {
   if (!element) return element;
+
+  if (!isNode(element)) return element;
 
   if (!element.children) return element;
   if (!element.children.length) return element;
 
   element.children = element.children.map((child) => {
-    let modified = func(child, options, element);
+    let modified = func(child as CustomNodeElement, options, element);
     iterateChildren(child, options, func);
     return modified;
   });
@@ -57,7 +94,7 @@ function iterateChildren(element, options, func) {
   return element;
 }
 
-function cleanOuterToInner(json, options) {
+function cleanOuterToInner(json: HimalayaElement[], options: ParserOptions) {
   json = json
     .filter((e) => filterComments(e, options))
     .filter((e) => filterSpaces(e, options))
@@ -69,7 +106,7 @@ function cleanOuterToInner(json, options) {
   return json;
 }
 
-function cleanInnerToOuter(json, options) {
+function cleanInnerToOuter(json: HimalayaElement[], options: ParserOptions) {
   json = json
     .map((e) => passToChildren(e, options, cleanInnerToOuter))
     .filter((e) => filterEmptyNodes(e, options));
@@ -77,8 +114,9 @@ function cleanInnerToOuter(json, options) {
   return json;
 }
 
-function filterEmptyNodes(e) {
-  if (e.type == "text") return true;
+function filterEmptyNodes(e: HimalayaElement, options: ParserOptions) {
+  if (isComment(e)) return false;
+  if (isText(e)) return true;
   if (e.tagName == "img") return true;
   if (e.tagName == "iframe") return true;
   if (e.tagName == "br") return true;
@@ -89,31 +127,33 @@ function filterEmptyNodes(e) {
   return e.children.length > 0;
 }
 
-function filterComments(e, options) {
-  return e.type == "text" || e.type == "element";
+function filterComments(e: HimalayaElement, options: ParserOptions): boolean {
+  return !isNode(e);
 }
 
-function filterSpaces(e, options) {
+function filterSpaces(e: HimalayaElement, options: ParserOptions) {
   // do not remove spaces when inside a <pre> tag
-  if (e.insidePre) return true;
-  let blankSpace = e.type == "text" && e.content.trim() == "";
+  if ((e as CustomNodeElement).insidePre) return true;
+  const blankSpace = isText(e) && e.content.trim() == "";
   return !blankSpace;
 }
 
-function filterTags(e, options) {
-  let TAGS = options.secondTry ? VALID_TAGS_SECOND_TRY : VALID_TAGS;
+function filterTags(e: HimalayaElement, options: ParserOptions) {
+  if (isText(e)) return true;
+  if (isComment(e)) return false;
 
-  let aditionalTags = options.includeTags || [];
-  let tags = [...TAGS, ...aditionalTags];
+  const TAGS = options.secondTry ? VALID_TAGS_SECOND_TRY : VALID_TAGS;
 
-  let tag = (e.tagName || "").toLowerCase();
-  let isText = e.type === "text";
-  let isValidTag = tags.indexOf(tag) > -1;
+  const aditionalTags = options.includeTags || [];
+  const tags = [...TAGS, ...aditionalTags];
 
-  return isText || isValidTag;
+  const tag = (e.tagName || "").toLowerCase();
+  const isValidTag = tags.indexOf(tag) > -1;
+
+  return isValidTag;
 }
 
-function filterClasses(e, options) {
+function filterClasses(e: HimalayaElement, options: ParserOptions) {
   if (options.includeClasses) return true;
   let forbiddenClasses = options.forbiddenClasses || [];
   let FORBIDDEN = [...FORBIDDEN_CLASSES, ...forbiddenClasses];
@@ -130,31 +170,36 @@ function filterClasses(e, options) {
   return !found;
 }
 
-function getClass(e) {
+function getClass(e: HimalayaElement) {
   return getProp(e, "class").toLowerCase();
 }
 
-function getProp(e, prop) {
+function getProp(e: HimalayaElement, prop: string) {
+  if (!isNode(e)) return "";
   if (!e.attributes) return "";
 
   let pair = e.attributes.find((a) => a.key === prop);
-  if (pair) return pair.value;
+  if (pair) return String(pair.value);
 
   return "";
 }
 
-function passToChildren(e, options, func) {
-  if (!e) return e;
+function passToChildren(
+  e: HimalayaElement,
+  options: ParserOptions,
+  func: RecursiveFunc
+) {
+  if (!isNode(e)) return e;
 
-  if (e.children && e.children.length > 0) {
+  if (isNodeWithChildren(e)) {
     e.children = func(e.children, options, func);
   }
 
   return e;
 }
 
-function cleanAttributes(e, options) {
-  if (e.type != "element") return e;
+function cleanAttributes(e: HimalayaElement, options: ParserOptions) {
+  if (!isNode(e)) return e;
 
   let type = getElementType(e);
   let attributeList = ATTRIBUTES_TO_KEEP[type];
@@ -179,7 +224,7 @@ function cleanAttributes(e, options) {
   return e;
 }
 
-function mirrorAttribute(e, source, target) {
+function mirrorAttribute(e: NodeElement, source: string, target: string) {
   let sourceValue = getProp(e, source);
   let targetValue = getProp(e, target);
   if (sourceValue && !targetValue) {
@@ -187,7 +232,7 @@ function mirrorAttribute(e, source, target) {
   }
 }
 
-function getElementType(e) {
+function getElementType(e: NodeElement): AttributeType {
   if (e.tagName === "img") return "IMAGE";
   if (e.tagName === "a") return "LINK";
   if (e.tagName === "source") return "SOURCE";
@@ -209,11 +254,9 @@ function getElementType(e) {
   return "OTHER";
 }
 
-function keepAttributes(e, list) {
+function keepAttributes(e: NodeElement, list: string[]) {
   e.attributes = e.attributes
     .map((a) => ({ key: a.key.toLowerCase(), value: a.value }))
-    .filter((attr) => attr.value && list.indexOf(attr.key) > -1);
+    .filter((attr) => attr.value && list.includes(attr.key));
   return e;
 }
-
-module.exports = { clean };
