@@ -1,8 +1,10 @@
-import { HimalayaElement } from "../types/himalaya";
 import { isNode } from "./helpers";
 
+import type { CustomNodeElement } from "../types/cleanview";
+import type { HimalayaElement } from "../types/himalaya";
+
 function query(tag: string, element: HimalayaElement | HimalayaElement[]) {
-  const founds: HimalayaElement[] = [];
+  const founds: CustomNodeElement[] = [];
   search(tag, element, founds);
 
   return founds;
@@ -11,7 +13,7 @@ function query(tag: string, element: HimalayaElement | HimalayaElement[]) {
 function search(
   tag: string,
   element: HimalayaElement | HimalayaElement[],
-  founds: HimalayaElement[]
+  founds: CustomNodeElement[]
 ): void {
   if (Array.isArray(element)) {
     element.forEach(function (el) {
@@ -33,7 +35,7 @@ function search(
 
   // If the element has children search recursively
   element.children.forEach(function (el) {
-    search(tag, el, founds);
+    if (isNode(el)) search(tag, el, founds);
   });
 }
 
