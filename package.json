@@ -19,6 +19,7 @@
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
+    "node-ts": "^8.0.9",
     "prettier": "^3.7.4",
     "terser-webpack-plugin": "^2.3.5",
     "ts-node": "^10.9.2",
