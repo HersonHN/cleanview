@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 function $(tag, element) {
   let founds = [];
@@ -7,13 +7,11 @@ function $(tag, element) {
   return founds;
 }
 
-
 function search(tag, element, founds) {
-
   if (Array.isArray(element)) {
     element.forEach(function (el) {
       search(tag, el, founds);
-    })
+    });
     return;
   }
 
@@ -30,8 +28,6 @@ function search(tag, element, founds) {
   element.children.forEach(function (el) {
     search(tag, el, founds);
   });
-
 }
-
 
 module.exports = $;

@@ -8,8 +8,7 @@
     "test": "test"
   },
   "dependencies": {
-    "himalaya": "^1.1.0",
-    "iso-path-join": "^1.0.6",
+    "himalaya": "^1.1.1",
     "url-parse": "^1.2.0"
   },
   "devDependencies": {

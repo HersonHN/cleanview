@@ -1,19 +1,14 @@
-'use strict';
+import parse from "url-parse";
 
-const join = require('iso-path-join');
-const parse = require('url-parse');
-
-
-function addBaseUrl(elements, baseURL) {
+export function addBaseUrl(elements, baseURL) {
   for (let id in elements) {
     if (elements.hasOwnProperty(id)) {
       let el = elements[id];
-      if (el.tagName === 'a') fixUrl(el, 'href', baseURL);
-      if (el.tagName === 'img') fixUrl(el, 'src', baseURL);
+      if (el.tagName === "a") fixUrl(el, "href", baseURL);
+      if (el.tagName === "img") fixUrl(el, "src", baseURL);
     }
   }
 }
-
 
 function fixUrl(element, prop, base) {
   element.attributes = element.attributes.map(function (attr) {
@@ -26,12 +21,11 @@ function fixUrl(element, prop, base) {
   });
 }
 
+export function merge(textBase, textURL) {
+  textURL = (textURL || "").trim();
 
-function merge(textBase, textURL) {
-  textURL = (textURL || '').trim();
-
-  if (textURL.indexOf('//') > -1) return textURL;
-  if (textURL.indexOf('base64') > -1) return textURL;
+  if (textURL.indexOf("//") > -1) return textURL;
+  if (textURL.indexOf("base64") > -1) return textURL;
 
   let url = parse(textURL, textBase);
 
@@ -39,10 +33,7 @@ function merge(textBase, textURL) {
 }
 
 function removeLastToken(string) {
-  let tokens = string.split('/');
+  let tokens = string.split("/");
   tokens.pop();
-  return tokens.join('/') + '/';
+  return tokens.join("/") + "/";
 }
-
-
-module.exports = { addBaseUrl, merge };

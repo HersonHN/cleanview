@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /***
   This needs to be a function within a function because the count
@@ -20,12 +20,10 @@ function addIds(element) {
     el.parentId = parent.id;
 
     allElements[id] = el;
-
   });
 
   return allElements;
 }
-
 
 function navigate(element, func, parent) {
   parent = parent || {};
@@ -40,7 +38,7 @@ function navigate(element, func, parent) {
   }
 
   // if it's an element
-  if (element.type === 'element') {
+  if (element.type === "element") {
     func(element, parent);
   }
 
@@ -49,7 +47,6 @@ function navigate(element, func, parent) {
   element.children.forEach(function (el) {
     navigate(el, func, element);
   });
-
 }
 
 module.exports = { addIds };

@@ -1,3 +1,5 @@
-'use strict';
+"use strict";
 
-module.exports = require('./scripts/parser');
+import parser from "./scripts/parser";
+
+export default parser;

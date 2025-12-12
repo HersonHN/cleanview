@@ -1,17 +1,17 @@
-'use strict';
+"use strict";
 
-const himalaya = require('himalaya');
+const himalaya = require("himalaya");
 
-const filters = require('./filters');
-const modifiers = require('./modifiers');
-const urlParser = require('./url-parser');
-const $ = require('./query');
+const filters = require("./filters");
+const modifiers = require("./modifiers");
+const urlParser = require("./url-parser");
+const $ = require("./query");
 
 const MIN_DEFAULT_RATIO = 0.75;
 
 function parse(html, options) {
   options = options || {};
-  options.url = options.url || '';
+  options.url = options.url || "";
 
   let { allElements, allParagraphs, clearedJSON } = parseJSON(html, options);
 
@@ -37,9 +37,8 @@ function parse(html, options) {
   return stringify([contentElement]);
 }
 
-
 function parseJSON(html, options) {
-  let url = options.url || '';
+  let url = options.url || "";
 
   let json = himalaya.parse(html);
 
@@ -52,11 +51,10 @@ function parseJSON(html, options) {
   // fix all the relative urls
   urlParser.addBaseUrl(allElements, url);
 
-  let allParagraphs = $('p', clearedJSON);
+  let allParagraphs = $("p", clearedJSON);
 
   return { allParagraphs, clearedJSON, allElements };
 }
-
 
 function getContentElement(allElements, allParagraphs, options) {
   let MIN_RATIO = options.minRatio || MIN_DEFAULT_RATIO;
@@ -71,7 +69,7 @@ function getContentElement(allElements, allParagraphs, options) {
   let ratio = 0;
   let count = 0;
   do {
-    let contentParagraphs = $('p', contentParent);
+    let contentParagraphs = $("p", contentParent);
     let contentParagraphsCount = contentParagraphs.length;
     ratio = contentParagraphsCount / totalParagraphs;
 
@@ -82,17 +80,14 @@ function getContentElement(allElements, allParagraphs, options) {
 
     // prevent infinite loops
     count++;
-
   } while (contentParent && ratio <= MIN_RATIO && count < 4);
 
   return contentParent;
 }
 
-
 function nothing(o) {
   return `<p><a href="${o.url}" target="_blank">${o.url}</a></p>`;
 }
-
 
 function countParents(allParagraphs) {
   let parents = {};
@@ -104,7 +99,6 @@ function countParents(allParagraphs) {
 
   return parents;
 }
-
 
 function getMaxId(obj) {
   let max = -1;
@@ -124,21 +118,20 @@ function getMaxId(obj) {
   return maxId;
 }
 
-
 function stringify(json) {
   let output = himalaya.stringify(json);
 
   output = output
-    .replace(/<html>/g, '')
-    .replace(/<body>/g, '')
-    .replace(/<div>/g, '')
-    .replace(/<span>/g, '')
-    .replace(/<\/html>/g, '')
-    .replace(/<\/body>/g, '')
-    .replace(/<\/div>/g, '')
-    .replace(/<\/span>/g, '');
+    .replace(/<html>/g, "")
+    .replace(/<body>/g, "")
+    .replace(/<div>/g, "")
+    .replace(/<span>/g, "")
+    .replace(/<\/html>/g, "")
+    .replace(/<\/body>/g, "")
+    .replace(/<\/div>/g, "")
+    .replace(/<\/span>/g, "");
 
-    return addSomeSpaces(output);
+  return addSomeSpaces(output);
 }
 
 function addSomeSpaces(str) {
@@ -146,8 +139,7 @@ function addSomeSpaces(str) {
   // preceded by: ( " [ { - – — _ ~ @
 
   // the reason to do this is to prevent space collapsing before links
-  return str.replace(/([^\(\"\[\{\-\–\—\_\~\@])<a/gi, '$1 <a');
+  return str.replace(/([^\(\"\[\{\-\–\—\_\~\@])<a/gi, "$1 <a");
 }
-
 
 module.exports = parse;
