@@ -1,5 +1,3 @@
-"use strict";
-
 import VALID_TAGS from "../defaults/valid-tags";
 import FORBIDDEN_CLASSES from "../defaults/forbidden-classes";
 import type {
@@ -9,6 +7,7 @@ import type {
   RecursiveFunc,
 } from "../types/cleanview";
 import type { HimalayaElement, NodeElement } from "../types/himalaya";
+import { isComment, isNode, isNodeWithChildren, isText } from "./helpers";
 
 type AttributeType =
   | "IMAGE"
@@ -44,22 +43,6 @@ function addFlags(json: HimalayaElement[], options: ParserOptions) {
   json = addFlagForPre(json, options);
 
   return json;
-}
-
-function isComment(e: HimalayaElement) {
-  return e.type === "comment";
-}
-
-function isText(e: HimalayaElement) {
-  return e.type === "text";
-}
-
-function isNode(e: HimalayaElement) {
-  return e.type === "element";
-}
-
-function isNodeWithChildren(e: HimalayaElement) {
-  return isNode(e) && e.children && e.children.length > 0;
 }
 
 function addFlagForPre(json: HimalayaElement[], options: ParserOptions) {
