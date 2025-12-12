@@ -32,7 +32,6 @@ export function clean(json: HimalayaElement[], options: ParserOptions) {
   options = options || {};
 
   json = addFlags(json, options);
-
   json = cleanOuterToInner(json, options);
   json = cleanInnerToOuter(json, options);
 
@@ -111,7 +110,7 @@ function filterEmptyNodes(e: HimalayaElement, options: ParserOptions) {
 }
 
 function filterComments(e: HimalayaElement, options: ParserOptions): boolean {
-  return !isNode(e);
+  return !isComment(e);
 }
 
 function filterSpaces(e: HimalayaElement, options: ParserOptions) {
