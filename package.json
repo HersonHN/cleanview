@@ -12,6 +12,7 @@
     "url-parse": "^1.2.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/node": "^25.0.1",
     "@types/url-parse": "^1.4.11",
     "@typescript-eslint/eslint-plugin": "^8.49.0",
@@ -19,19 +20,21 @@
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.5.0",
     "node-ts": "^8.0.9",
     "prettier": "^3.7.4",
     "terser-webpack-plugin": "^2.3.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.49.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.1.2"
   },
   "scripts": {
-    "test": "node test/index.js",
+    "test": "ts-node src/test/index.ts",
     "build": "tsc",
     "prepublishOnly": "npm run build",
-    "lint": "eslint . --ext .js,.ts",
+    "lint": "eslint src/ --ext .js,.ts",
     "format": "prettier --write ."
   },
   "repository": {
