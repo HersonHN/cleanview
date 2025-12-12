@@ -2,7 +2,8 @@
   "name": "cleanview",
   "version": "1.5.9",
   "description": "Clean the content of html articles",
-  "main": "src/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "directories": {
     "test": "test"
   },
@@ -12,13 +13,26 @@
     "url-parse": "^1.2.0"
   },
   "devDependencies": {
+    "@types/node": "^25.0.0",
+    "@types/url-parse": "^1.4.11",
+    "@typescript-eslint/eslint-plugin": "^8.49.0",
+    "@typescript-eslint/parser": "^8.49.0",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.7.4",
     "terser-webpack-plugin": "^2.3.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.1.2"
   },
   "scripts": {
     "test": "node test/index.js",
-    "build": "webpack"
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint . --ext .js,.ts",
+    "format": "prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -40,5 +54,7 @@
     "url": "https://github.com/HersonHN/cleanview/issues"
   },
   "homepage": "https://github.com/HersonHN/cleanview#readme",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }

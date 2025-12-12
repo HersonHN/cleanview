@@ -129,8 +129,6 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/osx,node,linux,windows
 
 
-# don't include real articles
-real-*.html
-real-*.txt
-test.html
-out.html
+# dist
+
+dist/

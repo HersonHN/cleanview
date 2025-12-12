@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "CommonJS",
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["./src/types/types.d.ts"],
+    "paths": {
+      "himalaya": ["./src/types/types.d.ts"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["dist/**/*"]
+}
