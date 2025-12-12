@@ -130,5 +130,10 @@ $RECYCLE.BIN/
 
 
 # dist
-
 dist/
+
+# don't include real articles
+real-*.html
+real-*.txt
+test.html
+out.html
