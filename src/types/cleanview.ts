@@ -10,10 +10,14 @@ export type ParserOptions = {
   includeTags?: string[];
   forbiddenClasses?: string[];
   includeClasses?: boolean;
+  url?: string;
+  minRatio?: number;
 };
 
 export type CustomNodeElement = NodeElement & {
   insidePre?: boolean;
+  id?: number;
+  parentId?: number;
   children: Array<CustomNodeElement | TextElement | CommentElement>;
 };
 
