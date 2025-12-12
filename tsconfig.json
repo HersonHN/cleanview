@@ -8,7 +8,7 @@
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./src/types/types.d.ts"],
+    "types": ["node", "./src/types/types.d.ts"],
     "paths": {
       "himalaya": ["./src/types/types.d.ts"]
     }
