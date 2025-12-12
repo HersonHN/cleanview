@@ -1,7 +1,7 @@
 import { HimalayaElement } from "../types/himalaya";
 import { isNode } from "./helpers";
 
-export function $(tag: string, element: HimalayaElement | HimalayaElement[]) {
+function query(tag: string, element: HimalayaElement | HimalayaElement[]) {
   const founds: HimalayaElement[] = [];
   search(tag, element, founds);
 
@@ -36,3 +36,5 @@ function search(
     search(tag, el, founds);
   });
 }
+
+export default query;
