@@ -14,7 +14,7 @@ function parse(html: string, options: ParserOptions) {
   options = options || {};
   options.url = options.url || "";
 
-  let { allElements, allParagraphs, clearedJSON } = parseJSON(html, options);
+  let { allElements, allParagraphs } = parseJSON(html, options);
 
   // If there's no paragraphs from the search, try again without filtering classes
   if (!allParagraphs.length) {
@@ -25,7 +25,6 @@ function parse(html: string, options: ParserOptions) {
 
     allParagraphs = result.allParagraphs;
     allElements = result.allElements;
-    clearedJSON = result.clearedJSON;
   }
 
   // if it's the second time around
@@ -110,14 +109,12 @@ function getMaxId(obj: Record<number, number>) {
   let maxId = -1;
 
   for (const id in obj) {
-    if (obj.hasOwnProperty(id)) {
-      const nId = Number(id);
-      const value = obj[nId];
+    const nId = Number(id);
+    const value = obj[nId];
 
-      if (value > max) {
-        max = value;
-        maxId = nId;
-      }
+    if (value > max) {
+      max = value;
+      maxId = nId;
     }
   }
 
@@ -144,7 +141,7 @@ function addSomeSpaces(str: string) {
   // preceded by: ( " [ { - – — _ ~ @
 
   // the reason to do this is to prevent space collapsing before links
-  return str.replace(/([^\(\"\[\{\-\–\—\_\~\@])<a/gi, "$1 <a");
+  return str.replace(/([^("[{\-–—_~@])<a/gi, "$1 <a");
 }
 
 export default parse;

@@ -46,7 +46,7 @@ function addFlags(json: HimalayaElement[], options: ParserOptions) {
 
 function addFlagForPre(json: HimalayaElement[], options: ParserOptions) {
   return json.map((e) =>
-    iterateChildren(e, options, (child, options, parent) => {
+    iterateChildren(e, options, (child, _, parent) => {
       if (parent.tagName === "pre" || parent.insidePre) {
         child.insidePre = true;
       }
@@ -96,7 +96,7 @@ function cleanInnerToOuter(json: HimalayaElement[], options: ParserOptions) {
   return json;
 }
 
-function filterEmptyNodes(e: HimalayaElement, options: ParserOptions) {
+function filterEmptyNodes(e: HimalayaElement, _options: ParserOptions) {
   if (isComment(e)) return false;
   if (isText(e)) return true;
   if (e.tagName == "img") return true;
@@ -109,11 +109,11 @@ function filterEmptyNodes(e: HimalayaElement, options: ParserOptions) {
   return e.children.length > 0;
 }
 
-function filterComments(e: HimalayaElement, options: ParserOptions): boolean {
+function filterComments(e: HimalayaElement, _options: ParserOptions): boolean {
   return !isComment(e);
 }
 
-function filterSpaces(e: HimalayaElement, options: ParserOptions) {
+function filterSpaces(e: HimalayaElement, _options: ParserOptions) {
   // do not remove spaces when inside a <pre> tag
   if ((e as CustomNodeElement).insidePre) return true;
   const blankSpace = isText(e) && e.content.trim() == "";
@@ -180,7 +180,7 @@ function passToChildren(
   return e;
 }
 
-function cleanAttributes(e: HimalayaElement, options: ParserOptions) {
+function cleanAttributes(e: HimalayaElement, _options: ParserOptions) {
   if (!isNode(e)) return e;
 
   const type = getElementType(e);

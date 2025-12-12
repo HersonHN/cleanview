@@ -7,8 +7,8 @@ import { isNode } from "./helpers";
   needs to reset to 1 each time `addIds` is called
 ***/
 export function addIds(elements: HimalayaElement[]) {
-  let allElements: Record<number, CustomNodeElement> = {};
-  var count = 1;
+  const allElements: Record<number, CustomNodeElement> = {};
+  let count = 1;
 
   function newId() {
     return count++;
@@ -17,7 +17,7 @@ export function addIds(elements: HimalayaElement[]) {
   navigate(elements, function (el, parent) {
     if (!el) return;
 
-    let id = newId();
+    const id = newId();
     el.id = id;
     el.parentId = parent.id;
 

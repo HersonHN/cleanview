@@ -1,13 +1,15 @@
 import parse from "url-parse";
-import { NodeElement } from "../types/himalaya";
+import type { NodeElement } from "../types/himalaya";
+import type { CustomNodeElement } from "../types/cleanview";
 
-export function addBaseUrl(elements: any, baseURL: string) {
+export function addBaseUrl(
+  elements: Record<number, CustomNodeElement>,
+  baseURL: string
+) {
   for (const id in elements) {
-    if (elements.hasOwnProperty(id)) {
-      const el = elements[id];
-      if (el.tagName === "a") fixUrl(el, "href", baseURL);
-      if (el.tagName === "img") fixUrl(el, "src", baseURL);
-    }
+    const el = elements[id];
+    if (el.tagName === "a") fixUrl(el, "href", baseURL);
+    if (el.tagName === "img") fixUrl(el, "src", baseURL);
   }
 }
 
@@ -30,10 +32,4 @@ export function merge(textBase: string, textURL: string): string {
   const url = parse(textURL, textBase);
 
   return url.href;
-}
-
-function removeLastToken(string: string) {
-  const tokens = string.split("/");
-  tokens.pop();
-  return tokens.join("/") + "/";
 }
