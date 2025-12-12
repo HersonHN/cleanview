@@ -2,7 +2,7 @@ import parse from "url-parse";
 import { NodeElement } from "../types/himalaya";
 
 export function addBaseUrl(elements: any, baseURL: string) {
-  for (let id in elements) {
+  for (const id in elements) {
     if (elements.hasOwnProperty(id)) {
       const el = elements[id];
       if (el.tagName === "a") fixUrl(el, "href", baseURL);
