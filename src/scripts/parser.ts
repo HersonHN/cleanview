@@ -1,6 +1,4 @@
-"use strict";
-
-import himalaya from "himalaya";
+import * as himalaya from "himalaya";
 
 import * as filters from "./filters";
 import * as modifiers from "./modifiers";
