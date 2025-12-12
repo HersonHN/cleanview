@@ -1,21 +1,28 @@
-'use strict';
+import { isNode } from "./helpers";
 
-function $(tag, element) {
-  let founds = [];
+import type { CustomNodeElement } from "../types/cleanview";
+import type { HimalayaElement } from "../types/himalaya";
+
+function query(tag: string, element: HimalayaElement | HimalayaElement[]) {
+  const founds: CustomNodeElement[] = [];
   search(tag, element, founds);
 
   return founds;
 }
 
-
-function search(tag, element, founds) {
-
+function search(
+  tag: string,
+  element: HimalayaElement | HimalayaElement[],
+  founds: CustomNodeElement[]
+): void {
   if (Array.isArray(element)) {
     element.forEach(function (el) {
       search(tag, el, founds);
-    })
+    });
     return;
   }
+
+  if (!isNode(element)) return;
 
   // If the tagname match, add the element and return
   if (element.tagName === tag) {
@@ -28,10 +35,8 @@ function search(tag, element, founds) {
 
   // If the element has children search recursively
   element.children.forEach(function (el) {
-    search(tag, el, founds);
+    if (isNode(el)) search(tag, el, founds);
   });
-
 }
 
-
-module.exports = $;
+export default query;
