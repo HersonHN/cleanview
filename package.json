@@ -1,12 +1,14 @@
 {
   "name": "cleanview",
-  "version": "1.5.9",
+  "version": "2.0.2",
   "description": "Clean the content of html articles",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "directories": {
-    "test": "test"
-  },
+  "files": [
+    "dist/",
+    "LICENSE.md",
+    "README.md"
+  ],
   "dependencies": {
     "himalaya": "^1.1.1",
     "url-parse": "^1.2.0"
@@ -35,7 +37,7 @@
     "build": "tsc",
     "prepublishOnly": "npm run build",
     "lint": "eslint src/ --ext .js,.ts",
-    "format": "prettier --write ."
+    "format": "prettier --write src/"
   },
   "repository": {
     "type": "git",
@@ -56,8 +58,5 @@
   "bugs": {
     "url": "https://github.com/HersonHN/cleanview/issues"
   },
-  "homepage": "https://github.com/HersonHN/cleanview#readme",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  }
+  "homepage": "https://github.com/HersonHN/cleanview#readme"
 }
