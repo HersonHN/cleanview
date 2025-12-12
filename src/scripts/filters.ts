@@ -69,7 +69,7 @@ function iterateChildren(
   if (!element.children.length) return element;
 
   element.children = element.children.map((child) => {
-    let modified = func(child as CustomNodeElement, options, element);
+    const modified = func(child as CustomNodeElement, options, element);
     iterateChildren(child, options, func);
     return modified;
   });
@@ -138,10 +138,10 @@ function filterTags(e: HimalayaElement, options: ParserOptions) {
 
 function filterClasses(e: HimalayaElement, options: ParserOptions) {
   if (options.includeClasses) return true;
-  let forbiddenClasses = options.forbiddenClasses || [];
-  let FORBIDDEN = [...FORBIDDEN_CLASSES, ...forbiddenClasses];
+  const forbiddenClasses = options.forbiddenClasses || [];
+  const FORBIDDEN = [...FORBIDDEN_CLASSES, ...forbiddenClasses];
 
-  let className = getClass(e);
+  const className = getClass(e);
   let found = false;
 
   FORBIDDEN.forEach(function (forbidden) {
@@ -161,7 +161,7 @@ function getProp(e: HimalayaElement, prop: string) {
   if (!isNode(e)) return "";
   if (!e.attributes) return "";
 
-  let pair = e.attributes.find((a) => a.key === prop);
+  const pair = e.attributes.find((a) => a.key === prop);
   if (pair) return String(pair.value);
 
   return "";
@@ -184,8 +184,8 @@ function passToChildren(
 function cleanAttributes(e: HimalayaElement, options: ParserOptions) {
   if (!isNode(e)) return e;
 
-  let type = getElementType(e);
-  let attributeList = ATTRIBUTES_TO_KEEP[type];
+  const type = getElementType(e);
+  const attributeList = ATTRIBUTES_TO_KEEP[type];
 
   keepAttributes(e, attributeList);
 
@@ -208,8 +208,8 @@ function cleanAttributes(e: HimalayaElement, options: ParserOptions) {
 }
 
 function mirrorAttribute(e: NodeElement, source: string, target: string) {
-  let sourceValue = getProp(e, source);
-  let targetValue = getProp(e, target);
+  const sourceValue = getProp(e, source);
+  const targetValue = getProp(e, target);
   if (sourceValue && !targetValue) {
     e.attributes.push({ key: target, value: sourceValue });
   }
@@ -220,13 +220,13 @@ function getElementType(e: NodeElement): AttributeType {
   if (e.tagName === "a") return "LINK";
   if (e.tagName === "source") return "SOURCE";
 
-  let isIFrame = e.tagName === "iframe";
+  const isIFrame = e.tagName === "iframe";
 
   if (isIFrame) {
-    let src = getProp(e, "src");
+    const src = getProp(e, "src");
 
     // TODO: add support to other platforms
-    let isYoutube =
+    const isYoutube =
       src.indexOf("youtube.com") > 0 || src.indexOf("youtu.be") > 0;
     if (isYoutube) return "YOUTUBE";
   }
