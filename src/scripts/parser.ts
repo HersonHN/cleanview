@@ -1,15 +1,18 @@
 "use strict";
 
-const himalaya = require("himalaya");
+import himalaya from "himalaya";
 
-const filters = require("./filters");
-const modifiers = require("./modifiers");
-const urlParser = require("./url-parser");
-const $ = require("./query");
+import * as filters from "./filters";
+import * as modifiers from "./modifiers";
+import * as urlParser from "./url-parser";
+import $ from "./query";
+
+import type { CustomNodeElement, ParserOptions } from "../types/cleanview";
+import type { HimalayaElement } from "../types/himalaya";
 
 const MIN_DEFAULT_RATIO = 0.75;
 
-function parse(html, options) {
+function parse(html: string, options: ParserOptions) {
   options = options || {};
   options.url = options.url || "";
 
@@ -20,7 +23,7 @@ function parse(html, options) {
     options.secondTry = true;
     options.includeClasses = true;
 
-    let result = parseJSON(html, options);
+    const result = parseJSON(html, options);
 
     allParagraphs = result.allParagraphs;
     allElements = result.allElements;
@@ -32,49 +35,52 @@ function parse(html, options) {
     return nothing(options);
   }
 
-  let contentElement = getContentElement(allElements, allParagraphs, options);
+  const contentElement = getContentElement(allElements, allParagraphs, options);
 
   return stringify([contentElement]);
 }
 
-function parseJSON(html, options) {
-  let url = options.url || "";
-
-  let json = himalaya.parse(html);
+function parseJSON(html: string, options: ParserOptions) {
+  const url = options.url || "";
+  const json = himalaya.parse(html);
 
   // clean the elements
-  let clearedJSON = filters.clean(json, options);
+  const clearedJSON = filters.clean(json, options);
 
   // add ids to each one
-  let allElements = modifiers.addIds(clearedJSON);
+  const allElements = modifiers.addIds(clearedJSON);
 
   // fix all the relative urls
   urlParser.addBaseUrl(allElements, url);
 
-  let allParagraphs = $("p", clearedJSON);
+  const allParagraphs = $("p", clearedJSON);
 
   return { allParagraphs, clearedJSON, allElements };
 }
 
-function getContentElement(allElements, allParagraphs, options) {
-  let MIN_RATIO = options.minRatio || MIN_DEFAULT_RATIO;
-  let totalParagraphs = allParagraphs.length;
+function getContentElement(
+  allElements: Record<number, CustomNodeElement>,
+  allParagraphs: CustomNodeElement[],
+  options: ParserOptions
+) {
+  const MIN_RATIO = options.minRatio || MIN_DEFAULT_RATIO;
+  const totalParagraphs = allParagraphs.length;
 
   // the element with more paragraphs will be the the one shown
-  let parents = countParents(allParagraphs);
-  let maxId = getMaxId(parents);
+  const parents = countParents(allParagraphs);
+  const maxId = getMaxId(parents);
 
   let contentParent = allElements[maxId];
-
   let ratio = 0;
   let count = 0;
+
   do {
-    let contentParagraphs = $("p", contentParent);
-    let contentParagraphsCount = contentParagraphs.length;
+    const contentParagraphs = $("p", contentParent);
+    const contentParagraphsCount = contentParagraphs.length;
     ratio = contentParagraphsCount / totalParagraphs;
 
     if (ratio < MIN_RATIO) {
-      let id = contentParent.parentId;
+      const id = contentParent.parentId ?? 0;
       contentParent = allElements[id];
     }
 
@@ -85,14 +91,15 @@ function getContentElement(allElements, allParagraphs, options) {
   return contentParent;
 }
 
-function nothing(o) {
+function nothing(o: ParserOptions) {
   return `<p><a href="${o.url}" target="_blank">${o.url}</a></p>`;
 }
 
-function countParents(allParagraphs) {
-  let parents = {};
+function countParents(allParagraphs: CustomNodeElement[]) {
+  const parents: Record<number | string, number> = {};
+
   allParagraphs.forEach(function (element) {
-    let id = element.parentId;
+    const id = element.parentId || "";
     parents[id] = parents[id] || 0;
     parents[id]++;
   });
@@ -100,17 +107,18 @@ function countParents(allParagraphs) {
   return parents;
 }
 
-function getMaxId(obj) {
+function getMaxId(obj: Record<number, number>) {
   let max = -1;
   let maxId = -1;
 
-  for (let id in obj) {
+  for (const id in obj) {
     if (obj.hasOwnProperty(id)) {
-      let value = obj[id];
+      const nId = Number(id);
+      const value = obj[nId];
 
       if (value > max) {
         max = value;
-        maxId = id;
+        maxId = nId;
       }
     }
   }
@@ -118,10 +126,9 @@ function getMaxId(obj) {
   return maxId;
 }
 
-function stringify(json) {
-  let output = himalaya.stringify(json);
-
-  output = output
+function stringify(json: HimalayaElement[]) {
+  const output = himalaya
+    .stringify(json)
     .replace(/<html>/g, "")
     .replace(/<body>/g, "")
     .replace(/<div>/g, "")
@@ -134,7 +141,7 @@ function stringify(json) {
   return addSomeSpaces(output);
 }
 
-function addSomeSpaces(str) {
+function addSomeSpaces(str: string) {
   // this will add a space before each anchor tag, except for those
   // preceded by: ( " [ { - – — _ ~ @
 
@@ -142,4 +149,4 @@ function addSomeSpaces(str) {
   return str.replace(/([^\(\"\[\{\-\–\—\_\~\@])<a/gi, "$1 <a");
 }
 
-module.exports = parse;
+export default parse;
